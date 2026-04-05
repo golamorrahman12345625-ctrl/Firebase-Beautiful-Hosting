@@ -3,36 +3,34 @@ import {
   TrendingUp, TrendingDown, ShoppingBag, Users, Package, DollarSign,
   ArrowUpRight, Bell, Activity
 } from "lucide-react";
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import {
+  AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, PieChart, Pie, Cell
+} from "recharts";
+import { useApp } from "@/context/AppContext";
+import { Link } from "wouter";
 
 const salesData = [
-  { month: "Jan", sales: 42000, expense: 28000 },
-  { month: "Feb", sales: 55000, expense: 32000 },
-  { month: "Mar", sales: 48000, expense: 30000 },
-  { month: "Apr", sales: 71000, expense: 38000 },
-  { month: "May", sales: 63000, expense: 35000 },
-  { month: "Jun", sales: 82000, expense: 42000 },
-  { month: "Jul", sales: 75000, expense: 40000 },
+  { month: "Oct", sales: 42000, expense: 28000 },
+  { month: "Nov", sales: 55000, expense: 32000 },
+  { month: "Dec", sales: 68000, expense: 38000 },
+  { month: "Jan", sales: 48000, expense: 30000 },
+  { month: "Feb", sales: 71000, expense: 38000 },
+  { month: "Mar", sales: 63000, expense: 35000 },
+  { month: "Apr", sales: 82000, expense: 42000 },
 ];
 
 const categoryData = [
-  { name: "Saree", value: 35, color: "#0ea5e9" },
-  { name: "Three-Piece", value: 25, color: "#8b5cf6" },
-  { name: "Cosmetics", value: 20, color: "#22c55e" },
-  { name: "Jewelry", value: 20, color: "#f59e0b" },
-];
-
-const recentOrders = [
-  { id: "#ORD-1001", customer: "Abdul Rahim", product: "T-Shirt (2 pcs)", amount: "৳1,000", status: "delivered", date: "04/04/2026" },
-  { id: "#ORD-1002", customer: "Karim Mia", product: "Smartwatch (1 pc)", amount: "৳2,500", status: "pending", date: "03/04/2026" },
-  { id: "#ORD-1003", customer: "Shafiqul Islam", product: "Headphone (1 pc)", amount: "৳800", status: "cancelled", date: "01/04/2026" },
-  { id: "#ORD-1004", customer: "Nasrin Begum", product: "Saree (2 pcs)", amount: "৳3,200", status: "delivered", date: "01/04/2026" },
+  { name: "Clothing", value: 38, color: "#0ea5e9" },
+  { name: "Jewelry", value: 24, color: "#8b5cf6" },
+  { name: "Cosmetics", value: 22, color: "#22c55e" },
+  { name: "Accessories", value: 16, color: "#f59e0b" },
 ];
 
 const actions = [
-  { title: "New Stock Update", desc: "Eid collection added to inventory. Check inventory.", date: "04 April, 2026", color: "sky" },
-  { title: "Weekly Meeting", desc: "Zoom meeting with the sales team tomorrow at 10 AM.", date: "03 April, 2026", color: "violet" },
-  { title: "Server Maintenance", desc: "Website may be down from 12am to 2am.", date: "01 April, 2026", color: "amber" },
+  { title: "New Stock Update", desc: "Eid collection added to inventory. Check inventory.", date: "05 April, 2026", color: "sky" },
+  { title: "Weekly Meeting", desc: "Zoom meeting with sales team tomorrow at 10 AM.", date: "04 April, 2026", color: "violet" },
+  { title: "Payment Due", desc: "Supplier payment of ৳15,000 due by end of week.", date: "03 April, 2026", color: "amber" },
 ];
 
 function StatCard({ icon, label, value, change, positive, color }: {
@@ -110,7 +108,7 @@ function Calendar() {
   for (let i = 0; i < firstDay; i++) days.push(null);
   for (let i = 1; i <= daysInMonth; i++) days.push(i);
 
-  const monthName = now.toLocaleString("en-US", { month: "long", year: "numeric" });
+  const monthName = now.toLocaleString("en-US", { month: "long", year: "numeric" }).toUpperCase();
 
   return (
     <div className="glass-card p-4">
@@ -120,10 +118,7 @@ function Calendar() {
       </div>
       <div className="grid grid-cols-7 gap-0.5 text-center text-[11px]">
         {days.map((d, i) => (
-          <span key={i} className={`
-            py-0.5 rounded-full
-            ${d === today ? "bg-sky-500 text-white font-bold" : d ? "text-white/70 hover:bg-white/10 cursor-pointer" : ""}
-          `}>{d || ""}</span>
+          <span key={i} className={`py-0.5 rounded-full ${d === today ? "bg-sky-500 text-white font-bold" : d ? "text-white/70 hover:bg-white/10 cursor-pointer" : ""}`}>{d || ""}</span>
         ))}
       </div>
     </div>
@@ -131,6 +126,15 @@ function Calendar() {
 }
 
 export default function Dashboard() {
+  const { transactions, orders, stockItems } = useApp();
+
+  const totalRevenue = transactions.filter(t => t.type === "income").reduce((s, t) => s + t.amount, 0);
+  const totalExpenses = transactions.filter(t => t.type === "expense").reduce((s, t) => s + t.amount, 0);
+  const totalStock = stockItems.reduce((s, i) => s + i.qty, 0);
+  const uniqueCustomers = new Set(orders.map(o => o.customer)).size;
+  const recentOrders = orders.slice(0, 5);
+  const pendingCount = orders.filter(o => o.status === "pending").length;
+
   const statusClass = {
     delivered: "badge-delivered",
     pending: "badge-pending",
@@ -146,6 +150,12 @@ export default function Dashboard() {
             Welcome back, <span className="font-bold text-sky-400">Prince</span>
           </h1>
           <p className="text-sm text-white/40 mt-1">Management Information System Dashboard</p>
+          {pendingCount > 0 && (
+            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs font-medium">
+              <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse" />
+              {pendingCount} order{pendingCount > 1 ? "s" : ""} pending action
+            </div>
+          )}
         </div>
         <div className="flex gap-4">
           <Clock />
@@ -155,20 +165,46 @@ export default function Dashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={<DollarSign size={18} className="text-sky-400" />} label="Total Revenue" value="৳4,82,000" change="+12.5%" positive={true} color="sky" />
-        <StatCard icon={<ShoppingBag size={18} className="text-violet-400" />} label="Total Orders" value="1,248" change="+8.2%" positive={true} color="violet" />
-        <StatCard icon={<Users size={18} className="text-emerald-400" />} label="Customers" value="342" change="+15.3%" positive={true} color="emerald" />
-        <StatCard icon={<Package size={18} className="text-amber-400" />} label="Stock Items" value="820" change="-3.1%" positive={false} color="amber" />
+        <StatCard icon={<DollarSign size={18} className="text-sky-400" />} label="Total Revenue" value={`৳${(totalRevenue).toLocaleString()}`} change="+12.5%" positive={true} color="sky" />
+        <StatCard icon={<ShoppingBag size={18} className="text-violet-400" />} label="Total Orders" value={orders.length.toLocaleString()} change="+8.2%" positive={true} color="violet" />
+        <StatCard icon={<Users size={18} className="text-emerald-400" />} label="Customers" value={uniqueCustomers.toString()} change="+15.3%" positive={true} color="emerald" />
+        <StatCard icon={<Package size={18} className="text-amber-400" />} label="Stock Units" value={totalStock.toLocaleString()} change="-3.1%" positive={false} color="amber" />
+      </div>
+
+      {/* Quick income/expense summary */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="glass-card p-4 flex items-center gap-4">
+          <div className="p-2.5 bg-green-500/15 rounded-xl"><TrendingUp size={16} className="text-green-400" /></div>
+          <div>
+            <p className="text-xs text-white/40">Total Income</p>
+            <p className="text-lg font-bold text-green-400">৳{totalRevenue.toLocaleString()}</p>
+          </div>
+          <Link href="/transactions/add" className="ml-auto">
+            <button className="text-xs text-sky-400 hover:text-sky-300 flex items-center gap-1 transition">Add <ArrowUpRight size={12} /></button>
+          </Link>
+        </div>
+        <div className="glass-card p-4 flex items-center gap-4">
+          <div className="p-2.5 bg-red-500/15 rounded-xl"><TrendingDown size={16} className="text-red-400" /></div>
+          <div>
+            <p className="text-xs text-white/40">Total Expense</p>
+            <p className="text-lg font-bold text-red-400">৳{totalExpenses.toLocaleString()}</p>
+          </div>
+          <div className="ml-auto text-right">
+            <p className="text-xs text-white/30">Net</p>
+            <p className={`text-sm font-bold ${totalRevenue - totalExpenses >= 0 ? "text-sky-400" : "text-red-400"}`}>
+              ৳{(totalRevenue - totalExpenses).toLocaleString()}
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Sales Chart */}
         <div className="lg:col-span-2 glass-card p-5">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="font-semibold text-white text-sm">Sales & Expense Overview</h3>
-              <p className="text-xs text-white/40 mt-0.5">Monthly performance 2026</p>
+              <p className="text-xs text-white/40 mt-0.5">Monthly performance 2025–2026</p>
             </div>
             <div className="flex items-center gap-4 text-xs text-white/50">
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-sky-400" /> Sales</span>
@@ -190,23 +226,20 @@ export default function Dashboard() {
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
               <XAxis dataKey="month" tick={{ fontSize: 11, fill: "rgba(255,255,255,0.4)" }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)" }} axisLine={false} tickLine={false} tickFormatter={v => `${v/1000}k`} />
-              <Tooltip contentStyle={{ background: "rgba(10,18,32,0.95)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "white", fontSize: 12 }} />
+              <Tooltip contentStyle={{ background: "rgba(10,18,32,0.95)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "white", fontSize: 12 }} formatter={(v: number) => [`৳${v.toLocaleString()}`, ""]} />
               <Area type="monotone" dataKey="sales" stroke="#0ea5e9" strokeWidth={2} fill="url(#sales)" />
               <Area type="monotone" dataKey="expense" stroke="#8b5cf6" strokeWidth={2} fill="url(#expense)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Category Pie */}
         <div className="glass-card p-5">
           <h3 className="font-semibold text-white text-sm mb-1">Category Split</h3>
           <p className="text-xs text-white/40 mb-4">By product category</p>
           <ResponsiveContainer width="100%" height={160}>
             <PieChart>
               <Pie data={categoryData} cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={3} dataKey="value">
-                {categoryData.map((entry, index) => (
-                  <Cell key={index} fill={entry.color} />
-                ))}
+                {categoryData.map((entry, index) => <Cell key={index} fill={entry.color} />)}
               </Pie>
               <Tooltip contentStyle={{ background: "rgba(10,18,32,0.95)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "white", fontSize: 12 }} />
             </PieChart>
@@ -227,14 +260,17 @@ export default function Dashboard() {
 
       {/* Recent Orders + Company Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Orders Table */}
         <div className="lg:col-span-2 glass-card overflow-hidden">
           <div className="flex items-center justify-between p-5 pb-3">
             <div>
               <h3 className="font-semibold text-white text-sm">Recent Orders</h3>
-              <p className="text-xs text-white/40">Latest order activity</p>
+              <p className="text-xs text-white/40">Latest {recentOrders.length} orders</p>
             </div>
-            <Activity size={15} className="text-sky-400" />
+            <Link href="/sales/order-history">
+              <button className="flex items-center gap-1 text-xs text-sky-400 hover:text-sky-300 transition">
+                View All <ArrowUpRight size={12} />
+              </button>
+            </Link>
           </div>
           <div className="overflow-x-auto">
             <table className="data-table w-full">
@@ -243,8 +279,8 @@ export default function Dashboard() {
                   <th className="text-left">Order ID</th>
                   <th className="text-left">Customer</th>
                   <th className="text-left hidden md:table-cell">Product</th>
-                  <th className="text-left">Amount</th>
-                  <th className="text-left">Status</th>
+                  <th className="text-right">Amount</th>
+                  <th className="text-center">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -253,9 +289,9 @@ export default function Dashboard() {
                     <td className="text-sky-400 font-mono text-xs">{order.id}</td>
                     <td className="text-white/80">{order.customer}</td>
                     <td className="text-white/60 text-xs hidden md:table-cell">{order.product}</td>
-                    <td className="text-white font-medium">{order.amount}</td>
-                    <td>
-                      <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${statusClass[order.status as keyof typeof statusClass]}`}>
+                    <td className="text-right text-white font-medium">৳{order.total.toLocaleString()}</td>
+                    <td className="text-center">
+                      <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${statusClass[order.status]}`}>
                         {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                       </span>
                     </td>
@@ -266,23 +302,20 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Company Actions */}
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-white text-sm">Company Actions</h3>
+            <h3 className="font-semibold text-white text-sm">Company Notices</h3>
             <Bell size={14} className="text-sky-400" />
           </div>
           <div className="space-y-3">
             {actions.map((action, i) => (
-              <div key={i} className={`p-3 rounded-xl border border-l-4 ${
-                action.color === "sky" ? "border-sky-500/20 border-l-sky-500" :
-                action.color === "violet" ? "border-violet-500/20 border-l-violet-500" :
-                "border-amber-500/20 border-l-amber-500"
-              }`} style={{ background: "rgba(255,255,255,0.03)" }} data-testid={`action-item-${i}`}>
-                <div className="flex justify-between items-start mb-1">
-                  <h4 className="font-semibold text-white text-xs">{action.title}</h4>
-                </div>
-                <p className="text-[11px] text-white/50 mb-2">{action.desc}</p>
+              <div key={i} className={`p-3 rounded-xl border-l-4 ${
+                action.color === "sky" ? "border-l-sky-500 bg-sky-500/5" :
+                action.color === "violet" ? "border-l-violet-500 bg-violet-500/5" :
+                "border-l-amber-500 bg-amber-500/5"
+              }`} data-testid={`action-item-${i}`}>
+                <h4 className="font-semibold text-white text-xs mb-1">{action.title}</h4>
+                <p className="text-[11px] text-white/50 mb-1.5">{action.desc}</p>
                 <span className="text-[10px] text-white/30">{action.date}</span>
               </div>
             ))}
