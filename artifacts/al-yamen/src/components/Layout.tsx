@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import NotificationsPanel from "./NotificationsPanel";
+import GlobalSearch from "./GlobalSearch";
 
 interface NavItem {
   icon: React.ReactNode;
@@ -198,6 +199,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Global Search */}
+            <GlobalSearch />
+
             {/* Notifications bell */}
             <div className="relative">
               <button

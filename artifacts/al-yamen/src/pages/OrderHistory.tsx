@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Search, ChevronDown } from "lucide-react";
+import { Search, Printer } from "lucide-react";
 import { useApp, Order } from "@/context/AppContext";
+import PrintInvoice from "@/components/PrintInvoice";
 
 const statusClass = {
   delivered: "badge-delivered",
@@ -13,6 +14,7 @@ export default function OrderHistory() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [printOrder, setPrintOrder] = useState<Order | null>(null);
 
   const filtered = orders.filter(o => {
     const matchSearch = o.customer.toLowerCase().includes(search.toLowerCase()) || o.id.includes(search);
@@ -74,7 +76,7 @@ export default function OrderHistory() {
                 <th className="text-left hidden lg:table-cell">Product</th>
                 <th className="text-right">Total</th>
                 <th className="text-center">Status</th>
-                <th className="text-center">Action</th>
+                <th className="text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -98,10 +100,15 @@ export default function OrderHistory() {
                       <option value="cancelled">Cancelled</option>
                     </select>
                   </td>
-                  <td className="text-center">
-                    <button onClick={e => { e.stopPropagation(); setSelectedOrder(o); }} className="text-[11px] text-sky-400 hover:text-sky-300 px-2 py-1 rounded transition">
-                      Details
-                    </button>
+                  <td className="text-center" onClick={e => e.stopPropagation()}>
+                    <div className="flex items-center justify-center gap-1">
+                      <button onClick={() => setSelectedOrder(o)} className="text-[11px] text-sky-400 hover:text-sky-300 px-2 py-1 rounded hover:bg-sky-500/10 transition">
+                        Details
+                      </button>
+                      <button onClick={() => setPrintOrder(o)} className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition" title="Print Invoice" data-testid={`button-print-${o.id}`}>
+                        <Printer size={13} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -143,6 +150,12 @@ export default function OrderHistory() {
             <div className="flex gap-3 mt-6">
               <button onClick={() => setSelectedOrder(null)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-white/60 hover:text-white hover:bg-white/5 text-sm transition">Close</button>
               <button
+                onClick={() => { setPrintOrder(selectedOrder); setSelectedOrder(null); }}
+                className="flex-1 py-2.5 rounded-xl bg-sky-500/15 border border-sky-500/20 text-sky-400 hover:bg-sky-500/25 text-sm font-medium transition flex items-center justify-center gap-2"
+              >
+                <Printer size={14} /> Print Invoice
+              </button>
+              <button
                 onClick={() => { updateOrderStatus(selectedOrder.id, "delivered"); setSelectedOrder(null); }}
                 className="flex-1 py-2.5 rounded-xl bg-green-500/15 border border-green-500/20 text-green-400 hover:bg-green-500/25 text-sm font-medium transition"
                 disabled={selectedOrder.status === "delivered"}
@@ -153,6 +166,9 @@ export default function OrderHistory() {
           </div>
         </div>
       )}
+
+      {/* Print Invoice */}
+      {printOrder && <PrintInvoice order={printOrder} onClose={() => setPrintOrder(null)} />}
     </div>
   );
 }
