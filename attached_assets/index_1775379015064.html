@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AL-YAMEN | Premium Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0; 
+            overflow: hidden; 
+            color: white;
+            background-color: #0d1b2a;
+        }
+        .bg-image {
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100vw; height: 100vh;
+            background-image: url('https://i.ibb.co/1GLn2xrg/Gemini-Generated-Image-v940lfv940lfv940-1.png');
+            background-size: cover; 
+            background-position: center; 
+            z-index: -1;
+            filter: brightness(0.9);
+        }
+        .glass-panel {
+            background: rgba(13, 27, 42, 0.48);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+        }
+        .sidebar {
+            background: rgba(10, 20, 35, 0.78);
+            backdrop-filter: blur(25px);
+        }
+
+        .menu-btn {
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 11px 15px;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            cursor: pointer; 
+            margin-bottom: 6px;
+            font-size: 13.8px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        .menu-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, rgba(14, 165, 233, 0.38), transparent);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+        }
+        .menu-btn:hover::before, 
+        .menu-btn.active::before {
+            left: 0;
+        }
+        html[dir="ltr"] .menu-btn:hover { padding-left: 22px; color: #38bdf8; }
+        html[dir="rtl"] .menu-btn:hover { padding-right: 22px; color: #38bdf8; }
+
+        .sub-menu {
+            max-height: 0; 
+            overflow: hidden;
+            transition: max-height 0.45s ease-out;
+            font-size: 13px; 
+            color: #94a3b8;
+        }
+        html[dir="ltr"] .sub-menu { padding-left: 38px; border-left: 1px solid rgba(14, 165, 233, 0.22); margin-left: 12px; }
+        html[dir="rtl"] .sub-menu { padding-right: 38px; border-right: 1px solid rgba(14, 165, 233, 0.22); margin-right: 12px; }
+        
+        .sub-menu.open { max-height: 520px; margin-top: 6px; margin-bottom: 8px; }
+        .sub-menu div { 
+            margin-bottom: 6px; 
+            cursor: pointer; 
+            padding: 5px 8px; 
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        .sub-menu div:hover { 
+            color: #38bdf8; 
+            transform: translateX(6px); 
+            background: rgba(255,255,255,0.05);
+        }
+
+        .arrow-icon { transition: transform 0.4s ease; }
+        .menu-btn.open .arrow-icon { transform: rotate(180deg); }
+
+        .clock { 
+            width: 78px; 
+            height: 78px; 
+            border: 2.5px solid rgba(255,255,255,0.25); 
+            border-radius: 50%; 
+            position: relative; 
+            margin: 0 auto; 
+            background: rgba(0,0,0,0.25);
+        }
+        .hand { 
+            position: absolute; 
+            bottom: 50%; 
+            left: 50%; 
+            transform-origin: bottom; 
+            background: white; 
+            border-radius: 4px;
+        }
+        .hour { width: 3.5px; height: 19px; }
+        .minute { width: 2.5px; height: 29px; background: #e2e8f0; }
+        .second { width: 1.8px; height: 34px; background: #38bdf8; }
+
+        .cal-grid { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            text-align: center; 
+            gap: 3px; 
+            font-size: 10.5px; 
+        }
+        .cal-active { 
+            background: #0ea5e9; 
+            color: white; 
+            border-radius: 50%; 
+            font-weight: 600; 
+        }
+    </style>
+</head>
+<body id="body" class="flex h-screen w-screen" dir="ltr">
+    <div class="bg-image"></div>
+
+    <aside class="w-[280px] sidebar flex flex-col py-5 px-4 overflow-y-auto border-r border-white/10">
+        <div class="flex items-center gap-3 mb-9 px-2">
+            <div class="bg-sky-500 p-2.5 rounded-xl shadow-lg">
+                <i class="fas fa-cube text-white text-2xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold tracking-tighter uppercase" data-i18n="app_title">AL-YAMEN</h2>
+        </div>
+
+        <nav class="flex-1 space-y-1">
+            <div class="menu-btn active">
+                <div class="flex items-center gap-3"><i class="fas fa-home w-5 opacity-70"></i> <span data-i18n="nav_dashboard">Dashboard</span></div>
+            </div>
+            <div class="menu-btn" onclick="toggleSubMenu(this)">
+                <div class="flex items-center gap-3"><i class="fas fa-exchange-alt w-5 opacity-70"></i> <span data-i18n="nav_trans">Transactions</span></div>
+                <i class="fas fa-chevron-down arrow-icon"></i>
+            </div>
+   <div class="sub-menu">
+    <a href="add_transaction.html" class="menu-link block py-2 px-10 hover:bg-white/10 transition-colors">
+        <div data-i18n="nav_trans_sub1">Add Transaction</div>
+    </a>
+    
+    <a href="all_transactions.html" class="menu-link block py-2 px-10 hover:bg-white/10 transition-colors">
+        <div data-i18n="nav_trans_sub2">All Transactions</div>
+    </a>
+
+    <a href="recent_transactions.html" class="menu-link block py-2 px-10 hover:bg-white/10 transition-colors">
+        <div data-i18n="nav_trans_sub3">Recent Transactions</div>
+    </a>
+</div>
+          <div class="menu-btn" onclick="toggleSubMenu(this)">
+    <div class="flex items-center gap-3">
+        <i class="fas fa-shopping-cart w-5 opacity-70"></i> 
+        <span data-i18n="nav_sales">Sales & Orders</span>
+    </div>
+    <i class="fas fa-chevron-down arrow-icon"></i>
+</div>
+<div class="sub-menu">
+    <a href="new_order.html" class="menu-link block py-2 px-10 hover:bg-white/10 transition-colors">
+        <div data-i18n="nav_sales_sub1">New Order</div>
+    </a>
+    <a href="order_history.html" class="menu-link block py-2 px-10 hover:bg-white/10 transition-colors">
+        <div data-i18n="nav_sales_sub2">Order History</div>
+    </a>
+    <a href="customer_list.html" class="menu-link block py-2 px-10 hover:bg-white/10 transition-colors">
+        <div data-i18n="nav_sales_sub3">Customer List</div>
+    </a>
+</div>
+
+<div class="menu-btn" onclick="toggleSubMenu(this)">
+    <div class="flex items-center gap-3">
+        <i class="fas fa-boxes w-5 opacity-70"></i> 
+        <span data-i18n="nav_inv">Inventory</span>
+    </div>
+    <i class="fas fa-chevron-down arrow-icon"></i>
+</div>
+<div class="sub-menu">
+    <a href="add_product.html" class="menu-link block py-2 px-10 hover:bg-white/10 transition-colors">
+        <div data-i18n="nav_inv_sub1">Add Product</div>
+    </a>
+    <a href="stock_list.html" class="menu-link block py-2 px-10 hover:bg-white/10 transition-colors">
+        <div data-i18n="nav_inv_sub2">Stock List</div>
+    </a>
+    <a href="categories.html" class="menu-link block py-2 px-10 hover:bg-white/10 transition-colors">
+        <div data-i18n="nav_inv_sub3">Categories</div>
+    </a>
+</div>
+            <div class="menu-btn" onclick="toggleSubMenu(this)">
+                <div class="flex items-center gap-3"><i class="fas fa-users-cog w-5 opacity-70"></i> <span data-i18n="nav_emp">HR Management</span></div>
+                <i class="fas fa-chevron-down arrow-icon"></i>
+            </div>
+            <div class="sub-menu">
+                <div data-i18n="nav_emp_sub1">Employee Info</div>
+                <div data-i18n="nav_emp_sub2">Payroll / Salary</div>
+                <div data-i18n="nav_emp_sub3">Attendance</div>
+            </div>
+
+            <div class="menu-btn" onclick="toggleSubMenu(this)">
+                <div class="flex items-center gap-3"><i class="fas fa-calculator w-5 opacity-70"></i> <span data-i18n="nav_acc">Accounting</span></div>
+                <i class="fas fa-chevron-down arrow-icon"></i>
+            </div>
+            <div class="sub-menu">
+                <div data-i18n="nav_acc_sub1">Daily Ledger</div>
+                <div data-i18n="nav_acc_sub2">Expense Report</div>
+            </div>
+
+            <div class="menu-btn mt-6" onclick="toggleSubMenu(this)">
+                <div class="flex items-center gap-3"><i class="fas fa-cog w-5 opacity-70"></i> <span data-i18n="nav_settings">Settings</span></div>
+                <i class="fas fa-chevron-down arrow-icon"></i>
+            </div>
+            <div class="sub-menu">
+                <div data-i18n="nav_set_sub1">System Config</div>
+                <div data-i18n="nav_set_sub2">User Roles</div>
+            </div>
+        </nav>
+
+        <div class="mt-8 p-4 glass-panel text-center rounded-2xl">
+            <p class="text-[10px] text-sky-400 font-bold uppercase tracking-widest mb-2" data-i18n="support_title">Support</p>
+            <button class="text-xs bg-sky-500/20 hover:bg-sky-500/40 w-full py-2.5 rounded-xl border border-sky-500/30 transition" data-i18n="support_btn">Contact Admin</button>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <header class="h-16 flex items-center justify-between px-6 bg-black/10 backdrop-blur-sm border-b border-white/5">
+            <div class="flex items-center gap-4">
+                <h3 class="font-medium text-lg" data-i18n="header_trans">Dashboard Overview</h3>
+            </div>
+            <div class="flex items-center gap-5">
+                <select id="langSelect" class="bg-black/60 text-sm py-1.5 px-3 rounded-xl border border-white/20 outline-none cursor-pointer" onchange="changeLanguage()">
+                    <option value="en">English</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="ar">العربية</option>
+                </select>
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-bold" data-i18n="admin_name">Prince Admin</p>
+                        <p class="text-[10px] opacity-60" data-i18n="admin_role">Super User</p>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Prince&background=0ea5e9&color=fff" class="w-9 h-9 rounded-full border border-white/20" alt="">
+                </div>
+            </div>
+        </header>
+
+        <div class="p-6 overflow-y-auto flex-1">
+            <div class="flex flex-col lg:flex-row justify-between gap-6 mb-8">
+                <div>
+                    <h1 class="text-3xl font-light"><span data-i18n="welcome">Welcome,</span> <b data-i18n="admin_first">Prince</b></h1>
+                    <p class="text-sm opacity-60 mt-1" data-i18n="dashboard_desc">Management Information System Dashboard</p>
+                </div>
+                
+                <div class="flex gap-4 flex-wrap">
+                    <!-- Calendar -->
+                    <div class="glass-panel p-4 w-52">
+                        <div id="cal-title" class="text-xs font-bold mb-3 opacity-60 uppercase tracking-widest" data-i18n="cal_title">April 2026</div>
+                        <div class="cal-grid opacity-70 mb-2 text-[10px]">
+                            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                        </div>
+                        <div id="calendar-days" class="cal-grid"></div>
+                    </div>
+
+                    <!-- Clock -->
+                    <div class="glass-panel p-4 w-32 flex flex-col items-center">
+                        <div class="clock">
+                            <div class="hand hour" id="hourHand"></div>
+                            <div class="hand minute" id="minuteHand"></div>
+                            <div class="hand second" id="secondHand"></div>
+                        </div>
+                        <p id="digital-time" class="text-xs mt-3 font-mono text-sky-400"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                <div class="glass-panel p-5 border-s-4 border-s-sky-500">
+                    <p class="text-xs opacity-60 uppercase font-medium" data-i18n="stat_rev">Annual Revenue</p>
+                    <h2 class="text-2xl font-bold mt-2">$33.4M</h2>
+                </div>
+                <div class="glass-panel p-5 border-s-4 border-s-purple-500">
+                    <p class="text-xs opacity-60 uppercase font-medium" data-i18n="stat_trans">Total Transactions</p>
+                    <h2 class="text-2xl font-bold mt-2">33,360</h2>
+                </div>
+                <div class="glass-panel p-5 border-s-4 border-s-orange-500">
+                    <p class="text-xs opacity-60 uppercase font-medium" data-i18n="stat_growth">Growth Rate</p>
+                    <h2 class="text-2xl font-bold mt-2">307.5%</h2>
+                </div>
+                <div class="glass-panel p-5 border-s-4 border-s-green-500">
+                    <p class="text-xs opacity-60 uppercase font-medium" data-i18n="stat_staff">Active Staff</p>
+                    <h2 class="text-2xl font-bold mt-2">142</h2>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="glass-panel p-6 h-80">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleSubMenu(element) {
+            const currentSub = element.nextElementSibling;
+            const isOpen = currentSub.classList.contains('open');
+            document.querySelectorAll('.sub-menu').forEach(menu => menu.classList.remove('open'));
+            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('open'));
+            if (!isOpen) {
+                element.classList.add('open');
+                currentSub.classList.add('open');
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const h = now.getHours();
+            const m = now.getMinutes();
+            const s = now.getSeconds();
+
+            document.getElementById('hourHand').style.transform = `translateX(-50%) rotate(${h * 30 + m / 2}deg)`;
+            document.getElementById('minuteHand').style.transform = `translateX(-50%) rotate(${m * 6}deg)`;
+            document.getElementById('secondHand').style.transform = `translateX(-50%) rotate(${s * 6}deg)`;
+
+            document.getElementById('digital-time').innerText = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function initCalendar() {
+            const container = document.getElementById('calendar-days');
+            container.innerHTML = "";
+            const today = new Date().getDate();
+            for (let i = 1; i <= 30; i++) {   // April has 30 days
+                const span = document.createElement('span');
+                span.innerText = i;
+                if (i === today) span.className = 'cal-active';
+                container.appendChild(span);
+            }
+        }
+        initCalendar();
+
+        const translations = {
+            en: {
+                app_title: "AL-YAMEN",
+                nav_dashboard: "Dashboard",
+                nav_trans: "Transactions",
+                nav_trans_sub1: "Add Transaction",
+                nav_trans_sub2: "All Transactions",
+                nav_trans_sub3: "Recent Transactions",
+                nav_sales: "Sales & Orders",
+                nav_sales_sub1: "New Order",
+                nav_sales_sub2: "Order History",
+                nav_sales_sub3: "Customer List",
+                nav_inv: "Inventory",
+                nav_inv_sub1: "Stock Items",
+                nav_inv_sub2: "Compactions",
+                nav_inv_sub3: "Categories",
+                nav_emp: "HR Management",
+                nav_emp_sub1: "Employee Info",
+                nav_emp_sub2: "Payroll / Salary",
+                nav_emp_sub3: "Attendance",
+                nav_acc: "Accounting",
+                nav_acc_sub1: "Daily Ledger",
+                nav_acc_sub2: "Expense Report",
+                nav_settings: "Settings",
+                nav_set_sub1: "System Config",
+                nav_set_sub2: "User Roles",
+                support_title: "Support",
+                support_btn: "Contact Admin",
+                header_trans: "Dashboard Overview",
+                admin_name: "Prince Admin",
+                admin_role: "Super User",
+                welcome: "Welcome,",
+                admin_first: "Prince",
+                dashboard_desc: "Management Information System Dashboard",
+                cal_title: "April 2026",
+                stat_rev: "Annual Revenue",
+                stat_trans: "Total Transactions",
+                stat_growth: "Growth Rate",
+                stat_staff: "Active Staff"
+            },
+            bn: {
+                app_title: "আল-ইয়ামেন",
+                nav_dashboard: "ড্যাশবোর্ড",
+                nav_trans: "লেনদেনসমূহ",
+                nav_trans_sub1: "লেনদেন যোগ করুন",
+                nav_trans_sub2: "সকল লেনদেন",
+                nav_trans_sub3: "সাম্প্রতিক লেনদেন",
+                nav_sales: "বিক্রয় ও অর্ডার",
+                nav_sales_sub1: "নতুন অর্ডার",
+                nav_sales_sub2: "অর্ডার ইতিহাস",
+                nav_sales_sub3: "গ্রাহক তালিকা",
+                nav_inv: "ইনভেন্টরি",
+                nav_inv_sub1: "স্টক আইটেম",
+                nav_inv_sub2: "কম্প্যাকশন",
+                nav_inv_sub3: "ক্যাটাগরি",
+                nav_emp: "এইচআর ম্যানেজমেন্ট",
+                nav_emp_sub1: "কর্মচারী তথ্য",
+                nav_emp_sub2: "বেতন / স্যালারি",
+                nav_emp_sub3: "উপস্থিতি",
+                nav_acc: "অ্যাকাউন্টিং",
+                nav_acc_sub1: "দৈনিক খতিয়ান",
+                nav_acc_sub2: "খরচের রিপোর্ট",
+                nav_settings: "সেটিংস",
+                nav_set_sub1: "সিস্টেম কনফিগ",
+                nav_set_sub2: "ইউজার রোল",
+                support_title: "সাপোর্ট",
+                support_btn: "অ্যাডমিন যোগাযোগ",
+                header_trans: "ড্যাশবোর্ড ওভারভিউ",
+                admin_name: "প্রিন্স অ্যাডমিন",
+                admin_role: "সুপার ইউজার",
+                welcome: "স্বাগতম,",
+                admin_first: "প্রিন্স",
+                dashboard_desc: "ম্যানেজমেন্ট ইনফরমেশন সিস্টেম ড্যাশবোর্ড",
+                cal_title: "এপ্রিল ২০২৬",
+                stat_rev: "বার্ষিক আয়",
+                stat_trans: "মোট লেনদেন",
+                stat_growth: "বৃদ্ধির হার",
+                stat_staff: "সক্রিয় কর্মী"
+            },
+            ar: {
+                app_title: "اليمن",
+                nav_dashboard: "لوحة القيادة",
+                nav_trans: "المعاملات",
+                nav_trans_sub1: "إضافة معاملة",
+                nav_trans_sub2: "كل المعاملات",
+                nav_trans_sub3: "المعاملات الأخيرة",
+                nav_sales: "المبيعات والطلبات",
+                nav_sales_sub1: "طلب جديد",
+                nav_sales_sub2: "سجل الطلبات",
+                nav_sales_sub3: "قائمة العملاء",
+                nav_inv: "المخزون",
+                nav_inv_sub1: "عناصر المخزون",
+                nav_inv_sub2: "الضغط",
+                nav_inv_sub3: "الفئات",
+                nav_emp: "إدارة الموظفين",
+                nav_emp_sub1: "معلومات الموظف",
+                nav_emp_sub2: "الرواتب / الراتب",
+                nav_emp_sub3: "الحضور",
+                nav_acc: "المحاسبة",
+                nav_acc_sub1: "دفتر الأستاذ اليومي",
+                nav_acc_sub2: "تقرير المصروفات",
+                nav_settings: "الإعدادات",
+                nav_set_sub1: "تكوين النظام",
+                nav_set_sub2: "أدوار المستخدم",
+                support_title: "الدعم",
+                support_btn: "اتصل بالمسؤول",
+                header_trans: "نظرة عامة على لوحة القيادة",
+                admin_name: "الأمير أدمن",
+                admin_role: "مستخدم متميز",
+                welcome: "مرحباً،",
+                admin_first: "برنس",
+                dashboard_desc: "لوحة معلومات نظام الإدارة",
+                cal_title: "أبريل 2026",
+                stat_rev: "الإيرادات السنوية",
+                stat_trans: "إجمالي المعاملات",
+                stat_growth: "معدل النمو",
+                stat_staff: "الموظفين النشطين"
+            }
+        };
+
+        function changeLanguage() {
+            const lang = document.getElementById('langSelect').value;
+            document.getElementById('body').dir = (lang === 'ar' ? 'rtl' : 'ltr');
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+        }
+
+        // Chart
+        const ctx = document.getElementById('barChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Revenue (M)',
+                    data: [12, 19, 13, 25, 22, 33],
+                    backgroundColor: 'rgba(14, 165, 233, 0.45)',
+                    borderColor: '#0ea5e9',
+                    borderWidth: 1.5,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.06)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

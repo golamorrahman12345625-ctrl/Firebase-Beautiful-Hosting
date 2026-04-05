@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+    <style>
+        /* পেজ এবং টেবিলের সাধারণ ডিজাইন */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        .history-container {
+            max-width: 900px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        /* স্ট্যাটাস ব্যাজের ডিজাইন */
+        .status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .delivered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="history-container">
+        <h2>অর্ডার হিস্ট্রি (Order History)</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>অর্ডার আইডি (Order ID)</th>
+                    <th>তারিখ (Date)</th>
+                    <th>গ্রাহকের নাম (Customer)</th>
+                    <th>প্রোডাক্ট (Product)</th>
+                    <th>মোট মূল্য (Total)</th>
+                    <th>স্ট্যাটাস (Status)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#ORD-1001</td>
+                    <td>০৪/০৪/২০২৬</td>
+                    <td>আব্দুর রহিম</td>
+                    <td>টি-শার্ট (২ টি)</td>
+                    <td>১,০০০ ৳</td>
+                    <td><span class="status delivered">ডেলিভার্ড</span></td>
+                </tr>
+                <tr>
+                    <td>#ORD-1002</td>
+                    <td>০৩/০৪/২০২৬</td>
+                    <td>করিম মিয়া</td>
+                    <td>স্মার্টওয়াচ (১ টি)</td>
+                    <td>২,৫০০ ৳</td>
+                    <td><span class="status pending">পেন্ডিং</span></td>
+                </tr>
+                <tr>
+                    <td>#ORD-1003</td>
+                    <td>০১/০৪/২০২৬</td>
+                    <td>শফিকুল ইসলাম</td>
+                    <td>হেডফোন (১ টি)</td>
+                    <td>৮০০ ৳</td>
+                    <td><span class="status cancelled">ক্যান্সেলড</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

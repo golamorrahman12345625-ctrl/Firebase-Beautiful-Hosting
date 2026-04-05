@@ -4,6 +4,15 @@
 
 pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
 
+## Artifacts
+
+### AL-YAMEN Dashboard (`artifacts/al-yamen`)
+- A premium business management dashboard for AL-YAMEN
+- Dark glass-panel UI theme inspired by the original HTML designs
+- Pages: Dashboard, Transactions (Add/All/Recent), Sales & Orders (New Order/History/Customers), Inventory (Add Product/Stock List/Categories), HR Management, Accounting, Settings
+- No backend — pure frontend with mock/demo data
+- Uses: React, Vite, Tailwind CSS v4, Recharts, Wouter, Lucide React, Framer Motion
+
 ## Stack
 
 - **Monorepo tool**: pnpm workspaces

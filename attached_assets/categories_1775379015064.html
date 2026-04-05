@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Categories</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f4f7f6;
+        }
+        .category-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e67e22;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        h2 { margin: 0; color: #d35400; }
+        .add-cat-btn {
+            background-color: #e67e22;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: #fdf2e9;
+            color: #e67e22;
+        }
+        .badge {
+            background: #eee;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #555;
+        }
+        .action-links a {
+            margin-right: 10px;
+            font-size: 14px;
+            text-decoration: none;
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="category-container">
+        <div class="header">
+            <h2>ক্যাটাগরি লিস্ট (Categories)</h2>
+            <a href="#" class="add-cat-btn">+ নতুন ক্যাটাগরি</a>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>আইডি</th>
+                    <th>ক্যাটাগরি নাম</th>
+                    <th>মোট পণ্য সংখ্যা</th>
+                    <th>অ্যাকশন</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#C-01</td>
+                    <td>শাড়ি (Saree)</td>
+                    <td><span class="badge">১২৫ টি</span></td>
+                    <td class="action-links"><a href="#">এডিট</a> <a href="#" style="color: red;">মুছে ফেলুন</a></td>
+                </tr>
+                <tr>
+                    <td>#C-02</td>
+                    <td>থ্রি-পিস (Salwar Kameez)</td>
+                    <td><span class="badge">৮০ টি</span></td>
+                    <td class="action-links"><a href="#">এডিট</a> <a href="#" style="color: red;">মুছে ফেলুন</a></td>
+                </tr>
+                <tr>
+                    <td>#C-03</td>
+                    <td>কসমেটিকস (Cosmetics)</td>
+                    <td><span class="badge">৪৫ টি</span></td>
+                    <td class="action-links"><a href="#">এডিট</a> <a href="#" style="color: red;">মুছে ফেলুন</a></td>
+                </tr>
+                <tr>
+                    <td>#C-04</td>
+                    <td>গয়না (Jewelry)</td>
+                    <td><span class="badge">৬০ টি</span></td>
+                    <td class="action-links"><a href="#">এডিট</a> <a href="#" style="color: red;">মুছে ফেলুন</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

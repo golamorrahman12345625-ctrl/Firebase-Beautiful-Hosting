@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer List</title>
+    <style>
+        /* পেজ এবং টেবিলের সাধারণ ডিজাইন */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        .customer-container {
+            max-width: 900px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #17a2b8; /* গ্রাহক তালিকার জন্য একটু ভিন্ন রঙ (Teal) */
+            color: white;
+        }
+        /* অ্যাকশন বাটনের ডিজাইন */
+        .btn-view {
+            background-color: #007bff;
+            color: white;
+            padding: 6px 12px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .btn-view:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="customer-container">
+        <h2>গ্রাহকের তালিকা (Customer List)</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ক্রমিক (Sl No.)</th>
+                    <th>নাম (Name)</th>
+                    <th>মোবাইল (Phone)</th>
+                    <th>ঠিকানা (Address)</th>
+                    <th>মোট অর্ডার (Total Orders)</th>
+                    <th>অ্যাকশন (Action)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>১</td>
+                    <td>আব্দুর রহিম</td>
+                    <td>০১৭XXXXXXXX</td>
+                    <td>মিরপুর, ঢাকা</td>
+                    <td>৩ টি</td>
+                    <td><a href="#" class="btn-view">বিস্তারিত</a></td>
+                </tr>
+                <tr>
+                    <td>২</td>
+                    <td>করিম মিয়া</td>
+                    <td>০১৯XXXXXXXX</td>
+                    <td>ধানমন্ডি, ঢাকা</td>
+                    <td>১ টি</td>
+                    <td><a href="#" class="btn-view">বিস্তারিত</a></td>
+                </tr>
+                <tr>
+                    <td>৩</td>
+                    <td>শফিকুল ইসলাম</td>
+                    <td>০১৮XXXXXXXX</td>
+                    <td>কুমিল্লা</td>
+                    <td>৫ টি</td>
+                    <td><a href="#" class="btn-view">বিস্তারিত</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

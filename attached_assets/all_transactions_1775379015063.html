@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History</title>
+    <style>
+        /* টেবিলটা একটু সুন্দর দেখানোর জন্য সামান্য ডিজাইন (CSS) দেওয়া হলো */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .income {
+            color: green;
+            font-weight: bold;
+        }
+        .expense {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>হিসাব-নিকাশ (Transactions)</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>তারিখ (Date)</th>
+                <th>বিবরণ (Description)</th>
+                <th>টাকার পরিমাণ (Amount)</th>
+                <th>ধরণ (Type)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>০৩/০৪/২০২৬</td>
+                <td>বেতন পেয়েছি</td>
+                <td>৫০,০০০ ৳</td>
+                <td class="income">আয়</td>
+            </tr>
+            <tr>
+                <td>০৩/০৪/২০২৬</td>
+                <td>ইন্টারনেট বিল</td>
+                <td>১,০০০ ৳</td>
+                <td class="expense">ব্যয়</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

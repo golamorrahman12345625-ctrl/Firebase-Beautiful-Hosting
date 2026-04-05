@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Order</title>
+    <style>
+        /* ফর্মের ডিজাইন */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f7f6;
+        }
+        .order-form-container {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 25px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="order-form-container">
+        <h2>নতুন অর্ডার (New Order)</h2>
+        
+        <form action="#">
+            
+            <div class="form-group">
+                <label for="customer_name">গ্রাহকের নাম (Customer Name):</label>
+                <input type="text" id="customer_name" name="customer_name" placeholder="গ্রাহকের নাম লিখুন" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">মোবাইল নম্বর (Phone Number):</label>
+                <input type="tel" id="phone" name="phone" placeholder="০১৭XXXXXXXX" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="product">প্রোডাক্টের নাম (Product Name):</label>
+                <input type="text" id="product" name="product" placeholder="কী অর্ডার করছেন?" required>
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">পরিমাণ (Quantity):</label>
+                <input type="number" id="quantity" name="quantity" placeholder="1" min="1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="price">মোট মূল্য (Total Price):</label>
+                <input type="number" id="price" name="price" placeholder="0.00" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="address">ডেলিভারি ঠিকানা (Address):</label>
+                <textarea id="address" name="address" rows="3" placeholder="পূর্ণাঙ্গ ঠিকানা লিখুন" required></textarea>
+            </div>
+            
+            <button type="submit">অর্ডার কনফার্ম করুন (Place Order)</button>
+            
+        </form>
+    </div>
+
+</body>
+</html>

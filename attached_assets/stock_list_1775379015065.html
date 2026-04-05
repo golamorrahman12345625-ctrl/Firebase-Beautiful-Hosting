@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Items</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f2f5;
+        }
+        .stock-container {
+            max-width: 950px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #eee;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        /* স্টক স্ট্যাটাস কালার */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .in-stock {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .low-stock {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .out-of-stock {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .add-btn {
+            background-color: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            float: right;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stock-container">
+        <a href="#" class="add-btn">+ নতুন আইটেম যোগ করুন</a>
+        <h2>স্টক ইনভেন্টরি (Stock Items)</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>আইটেম কোড</th>
+                    <th>পণ্যের নাম</th>
+                    <th>ক্যাটাগরি</th>
+                    <th>পরিমাণ (Qty)</th>
+                    <th>ক্রয় মূল্য</th>
+                    <th>অবস্থা (Status)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#P-001</td>
+                    <td>সুতি শাড়ি</td>
+                    <td>পোশাক</td>
+                    <td>২৫ টি</td>
+                    <td>৮০০ ৳</td>
+                    <td><span class="status-badge in-stock">স্টকে আছে</span></td>
+                </tr>
+                <tr>
+                    <td>#P-002</td>
+                    <td>লেদার বেল্ট</td>
+                    <td>এক্সেসরিজ</td>
+                    <td>০৫ টি</td>
+                    <td>৩৫০ ৳</td>
+                    <td><span class="status-badge low-stock">অল্প আছে</span></td>
+                </tr>
+                <tr>
+                    <td>#P-003</td>
+                    <td>পাঞ্জাবি</td>
+                    <td>পোশাক</td>
+                    <td>০০ টি</td>
+                    <td>১,২০০ ৳</td>
+                    <td><span class="status-badge out-of-stock">স্টক শেষ</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
