@@ -1,18 +1,9 @@
 import { useState } from "react";
-import { Search, Filter, TrendingUp, TrendingDown } from "lucide-react";
-
-const transactions = [
-  { id: 1, date: "03/04/2026", description: "Monthly Salary", amount: 50000, type: "income" },
-  { id: 2, date: "03/04/2026", description: "Internet Bill", amount: 1000, type: "expense" },
-  { id: 3, date: "02/04/2026", description: "Freelancing Payment", amount: 5000, type: "income" },
-  { id: 4, date: "02/04/2026", description: "Raw Materials", amount: 12000, type: "expense" },
-  { id: 5, date: "01/04/2026", description: "Product Sales", amount: 28000, type: "income" },
-  { id: 6, date: "01/04/2026", description: "Office Rent", amount: 8000, type: "expense" },
-  { id: 7, date: "31/03/2026", description: "Wholesale Order", amount: 45000, type: "income" },
-  { id: 8, date: "30/03/2026", description: "Electricity Bill", amount: 2500, type: "expense" },
-];
+import { Search, Filter, TrendingUp, TrendingDown, Download } from "lucide-react";
+import { useApp } from "@/context/AppContext";
 
 export default function AllTransactions() {
+  const { transactions } = useApp();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
 
@@ -28,9 +19,14 @@ export default function AllTransactions() {
 
   return (
     <div data-testid="page-all-transactions">
-      <div className="mb-6">
-        <h2 className="text-xl font-bold text-white">All Transactions</h2>
-        <p className="text-sm text-white/40 mt-1">Complete transaction history</p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-xl font-bold text-white">All Transactions</h2>
+          <p className="text-sm text-white/40 mt-1">Complete transaction history ({transactions.length} entries)</p>
+        </div>
+        <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 text-white/50 hover:text-white hover:bg-white/5 text-sm transition">
+          <Download size={14} /> Export
+        </button>
       </div>
 
       {/* Summary */}
@@ -89,9 +85,9 @@ export default function AllTransactions() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(t => (
+              {filtered.map((t, i) => (
                 <tr key={t.id} data-testid={`row-transaction-${t.id}`}>
-                  <td className="text-white/30 text-xs">{t.id}</td>
+                  <td className="text-white/30 text-xs">{i + 1}</td>
                   <td className="text-white/60 text-xs">{t.date}</td>
                   <td className="text-white/80">{t.description}</td>
                   <td className="text-right font-semibold">

@@ -1,12 +1,22 @@
 import { useState } from "react";
 import { PlusCircle, CheckCircle } from "lucide-react";
+import { useApp } from "@/context/AppContext";
+import { Link } from "wouter";
 
 export default function AddTransaction() {
+  const { addTransaction } = useApp();
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ date: "", description: "", amount: "", type: "income" });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const today = new Date().toLocaleDateString("en-GB");
+    addTransaction({
+      date: form.date ? new Date(form.date).toLocaleDateString("en-GB") : today,
+      description: form.description,
+      amount: parseFloat(form.amount),
+      type: form.type as "income" | "expense",
+    });
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 3000);
     setForm({ date: "", description: "", amount: "", type: "income" });
@@ -20,9 +30,14 @@ export default function AddTransaction() {
       </div>
 
       {submitted && (
-        <div className="flex items-center gap-3 p-4 rounded-xl mb-5 bg-green-500/10 border border-green-500/20 text-green-400">
-          <CheckCircle size={18} />
-          <span className="text-sm font-medium">Transaction added successfully!</span>
+        <div className="flex items-center justify-between gap-3 p-4 rounded-xl mb-5 bg-green-500/10 border border-green-500/20 text-green-400">
+          <div className="flex items-center gap-3">
+            <CheckCircle size={18} />
+            <span className="text-sm font-medium">Transaction added successfully!</span>
+          </div>
+          <Link href="/transactions/all">
+            <button className="text-xs text-sky-400 hover:text-sky-300 transition underline underline-offset-2">View All</button>
+          </Link>
         </div>
       )}
 
@@ -34,7 +49,6 @@ export default function AddTransaction() {
               type="date"
               value={form.date}
               onChange={e => setForm({ ...form, date: e.target.value })}
-              required
               className="form-input w-full py-2.5 px-3 rounded-lg text-sm text-white"
               data-testid="input-date"
             />
@@ -60,6 +74,7 @@ export default function AddTransaction() {
               value={form.amount}
               onChange={e => setForm({ ...form, amount: e.target.value })}
               placeholder="0.00"
+              min="1"
               required
               className="form-input w-full py-2.5 px-3 rounded-lg text-sm text-white placeholder-white/25"
               data-testid="input-amount"
@@ -77,6 +92,15 @@ export default function AddTransaction() {
               <option value="income">Income (আয়)</option>
               <option value="expense">Expense (ব্যয়)</option>
             </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-white/70 mb-2">Note (optional)</label>
+            <textarea
+              placeholder="Additional details..."
+              rows={3}
+              className="form-input w-full py-2.5 px-3 rounded-lg text-sm text-white placeholder-white/25 resize-none"
+            />
           </div>
 
           <button

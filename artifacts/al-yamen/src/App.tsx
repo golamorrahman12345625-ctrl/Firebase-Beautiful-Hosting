@@ -1,8 +1,10 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AppProvider, useApp } from "@/context/AppContext";
 import Layout from "@/components/Layout";
+import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
 import AddTransaction from "@/pages/AddTransaction";
 import AllTransactions from "@/pages/AllTransactions";
@@ -20,7 +22,13 @@ import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
 
-function Router() {
+function ProtectedRouter() {
+  const { isLoggedIn } = useApp();
+
+  if (!isLoggedIn) {
+    return <Login />;
+  }
+
   return (
     <Layout>
       <Switch>
@@ -47,9 +55,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Router />
-        </WouterRouter>
+        <AppProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <ProtectedRouter />
+          </WouterRouter>
+        </AppProvider>
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
