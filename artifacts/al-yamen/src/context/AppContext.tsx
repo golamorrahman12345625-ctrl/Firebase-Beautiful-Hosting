@@ -41,11 +41,14 @@ export interface Notification {
 interface AppContextType {
   transactions: Transaction[];
   addTransaction: (t: Omit<Transaction, "id">) => void;
+  removeTransaction: (id: number) => void;
   orders: Order[];
   addOrder: (o: Omit<Order, "id" | "date" | "status">) => void;
   updateOrderStatus: (id: string, status: Order["status"]) => void;
   stockItems: StockItem[];
   addStockItem: (s: Omit<StockItem, "code">) => void;
+  updateStockItem: (code: string, s: Omit<StockItem, "code">) => void;
+  removeStockItem: (code: string) => void;
   notifications: Notification[];
   markNotificationRead: (id: number) => void;
   markAllRead: () => void;
@@ -132,6 +135,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }, ...prev]);
   }, [nextTxId]);
 
+  const removeTransaction = useCallback((id: number) => {
+    setTransactions(prev => prev.filter(t => t.id !== id));
+  }, []);
+
   const addOrder = useCallback((o: Omit<Order, "id" | "date" | "status">) => {
     const id = `#ORD-${nextOrdNum}`;
     const today = new Date().toLocaleDateString("en-GB").replace(/\//g, "/");
@@ -152,10 +159,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const addStockItem = useCallback((s: Omit<StockItem, "code">) => {
-    const code = `#P-00${nextStockNum}`;
+    const code = `#P-${String(nextStockNum).padStart(3, "0")}`;
     setStockItems(prev => [{ ...s, code }, ...prev]);
     setNextStockNum(n => n + 1);
   }, [nextStockNum]);
+
+  const updateStockItem = useCallback((code: string, s: Omit<StockItem, "code">) => {
+    setStockItems(prev => prev.map(item => item.code === code ? { ...s, code } : item));
+  }, []);
+
+  const removeStockItem = useCallback((code: string) => {
+    setStockItems(prev => prev.filter(item => item.code !== code));
+  }, []);
 
   const markNotificationRead = useCallback((id: number) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
@@ -169,9 +184,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={{
-      transactions, addTransaction,
+      transactions, addTransaction, removeTransaction,
       orders, addOrder, updateOrderStatus,
-      stockItems, addStockItem,
+      stockItems, addStockItem, updateStockItem, removeStockItem,
       notifications, markNotificationRead, markAllRead, unreadCount,
       isLoggedIn, login, logout,
     }}>

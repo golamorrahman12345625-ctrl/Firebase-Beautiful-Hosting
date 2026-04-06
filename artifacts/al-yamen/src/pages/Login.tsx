@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useApp } from "@/context/AppContext";
 import { Eye, EyeOff, Box, AlertCircle } from "lucide-react";
-import screenshot from "@assets/Screenshot_2026-04-06_234113_1775508084378.png";
-import checkScreenshot from "@assets/Screenshot_2026-04-06_234311_1775508200243.png";
 
 export default function Login() {
   const { login } = useApp();
@@ -52,22 +50,6 @@ export default function Login() {
             <span className="text-xl font-bold tracking-wider uppercase text-white">AL-YAMEN</span>
             <p className="text-[10px] text-sky-400/70 tracking-widest">Management System</p>
           </div>
-        </div>
-
-        <div className="relative mt-8 max-w-xl">
-          <img
-            src={screenshot}
-            alt="Security scan issue screenshot"
-            className="w-full rounded-2xl border border-white/10 shadow-2xl shadow-black/40"
-          />
-        </div>
-
-        <div className="relative mt-4 max-w-xl">
-          <img
-            src={checkScreenshot}
-            alt="Pages build check screenshot"
-            className="w-full rounded-2xl border border-white/10 shadow-2xl shadow-black/40"
-          />
         </div>
 
         <div>

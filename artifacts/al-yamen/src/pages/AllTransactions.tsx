@@ -1,11 +1,31 @@
 import { useState } from "react";
-import { Search, Filter, TrendingUp, TrendingDown, Download } from "lucide-react";
+import { Search, Filter, TrendingUp, TrendingDown, Download, Trash2 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 
+function exportCSV(rows: { id: number; date: string; description: string; amount: number; type: string }[]) {
+  const header = ["#", "Date", "Description", "Amount (৳)", "Type"];
+  const lines = rows.map((t, i) => [
+    i + 1,
+    t.date,
+    `"${t.description.replace(/"/g, '""')}"`,
+    t.amount,
+    t.type,
+  ].join(","));
+  const csv = [header.join(","), ...lines].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `al-yamen-transactions-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function AllTransactions() {
-  const { transactions } = useApp();
+  const { transactions, removeTransaction } = useApp();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
+  const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
 
   const filtered = transactions.filter(t => {
     const matchSearch = t.description.toLowerCase().includes(search.toLowerCase());
@@ -24,8 +44,12 @@ export default function AllTransactions() {
           <h2 className="text-xl font-bold text-white">All Transactions</h2>
           <p className="text-sm text-white/40 mt-1">Complete transaction history ({transactions.length} entries)</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 text-white/50 hover:text-white hover:bg-white/5 text-sm transition">
-          <Download size={14} /> Export
+        <button
+          onClick={() => exportCSV(filtered)}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 text-white/60 hover:text-white hover:bg-white/8 text-sm transition"
+          data-testid="button-export"
+        >
+          <Download size={14} /> Export CSV
         </button>
       </div>
 
@@ -82,6 +106,7 @@ export default function AllTransactions() {
                 <th className="text-left">Description</th>
                 <th className="text-right">Amount</th>
                 <th className="text-center">Type</th>
+                <th className="text-center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -101,6 +126,15 @@ export default function AllTransactions() {
                       {t.type === "income" ? "Income" : "Expense"}
                     </span>
                   </td>
+                  <td className="text-center">
+                    <button
+                      onClick={() => setConfirmDelete(t.id)}
+                      className="p-1.5 text-red-400/50 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition"
+                      data-testid={`button-delete-${t.id}`}
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -110,6 +144,29 @@ export default function AllTransactions() {
           )}
         </div>
       </div>
+
+      {/* Delete confirm */}
+      {confirmDelete !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
+          <div className="glass-panel p-6 w-full max-w-sm rounded-2xl text-center">
+            <div className="w-12 h-12 rounded-full bg-red-500/15 flex items-center justify-center mx-auto mb-4">
+              <Trash2 size={20} className="text-red-400" />
+            </div>
+            <h3 className="text-base font-bold text-white mb-2">Delete Transaction?</h3>
+            <p className="text-sm text-white/40 mb-5">This entry will be permanently removed from the ledger.</p>
+            <div className="flex gap-3">
+              <button onClick={() => setConfirmDelete(null)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-white/60 hover:text-white hover:bg-white/5 text-sm transition">Cancel</button>
+              <button
+                onClick={() => { removeTransaction(confirmDelete); setConfirmDelete(null); }}
+                className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-400 text-white text-sm font-semibold transition"
+                data-testid="button-confirm-delete"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
